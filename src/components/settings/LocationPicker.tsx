@@ -109,12 +109,16 @@ export default function LocationPicker() {
     }
   }, [selectedCity, setLocation]);
 
+  const selectStyle: React.CSSProperties = { colorScheme: 'dark' };
+
   const selectClass = `
-    w-full rounded-lg px-3 py-2 text-sm appearance-none cursor-pointer
-    bg-white/5 border border-white/10 text-white/90
-    hover:bg-white/10 focus:ring-1 focus:ring-indigo-400/50 outline-none
+    w-full rounded-lg px-3 py-2 text-sm cursor-pointer
+    bg-gray-800 border border-white/10 text-white
+    hover:bg-gray-700 focus:ring-1 focus:ring-indigo-400/50 outline-none
     transition-colors
   `;
+
+  const optionClass = "bg-gray-800 text-white";
 
   return (
     <div ref={containerRef} className="relative">
@@ -177,10 +181,11 @@ export default function LocationPicker() {
               value={selectedCountry}
               onChange={(e) => handleCountryChange(e.target.value)}
               className={selectClass}
+              style={selectStyle}
             >
-              <option value="" disabled>{t('settings.selectCountry')}</option>
+              <option value="" disabled className={optionClass}>{t('settings.selectCountry')}</option>
               {COUNTRIES.map((c) => (
-                <option key={c.code} value={c.code}>{c.name}</option>
+                <option key={c.code} value={c.code} className={optionClass}>{c.name}</option>
               ))}
             </select>
 
@@ -190,10 +195,11 @@ export default function LocationPicker() {
                 value={selectedCity}
                 onChange={(e) => handleCityChange(e.target.value)}
                 className={selectClass}
+                style={selectStyle}
               >
-                <option value="" disabled>{t('settings.selectCity')}</option>
+                <option value="" disabled className={optionClass}>{t('settings.selectCity')}</option>
                 {cities.map((c) => (
-                  <option key={c.name} value={c.name}>{c.name}</option>
+                  <option key={c.name} value={c.name} className={optionClass}>{c.name}</option>
                 ))}
               </select>
             )}
@@ -204,10 +210,11 @@ export default function LocationPicker() {
                 value={selectedDistrict}
                 onChange={(e) => handleDistrictChange(e.target.value)}
                 className={selectClass}
+                style={selectStyle}
               >
-                <option value="" disabled>{t('settings.selectDistrict')}</option>
+                <option value="" disabled className={optionClass}>{t('settings.selectDistrict')}</option>
                 {districts.map((d) => (
-                  <option key={d.name} value={d.name}>{d.name}</option>
+                  <option key={d.name} value={d.name} className={optionClass}>{d.name}</option>
                 ))}
               </select>
             )}
