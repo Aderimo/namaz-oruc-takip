@@ -1,108 +1,151 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from '../../hooks/useLocation';
+import { COUNTRIES, TURKEY_CITIES, INTERNATIONAL_CITIES } from '../../data/turkeyLocations';
 import type { LocationData } from '../../types';
+
+/** Ülke koduna göre timezone döndürür */
+const COUNTRY_TIMEZONES: Record<string, string> = {
+  TR: 'Europe/Istanbul', DE: 'Europe/Berlin', FR: 'Europe/Paris',
+  GB: 'Europe/London', US: 'America/New_York', SA: 'Asia/Riyadh',
+  EG: 'Africa/Cairo', NL: 'Europe/Amsterdam', BE: 'Europe/Brussels',
+  AT: 'Europe/Vienna', SE: 'Europe/Stockholm', NO: 'Europe/Oslo',
+  DK: 'Europe/Copenhagen', CH: 'Europe/Zurich', CA: 'America/Toronto',
+  AU: 'Australia/Sydney',
+};
 
 export default function LocationPicker() {
   const { t } = useTranslation();
-  const { location, isLoading, error, searchCity, setLocation } = useLocation();
+  const { location, isLoading, setLocation } = useLocation();
 
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<LocationData[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleSearch = useCallback(
-    (value: string) => {
-      setQuery(value);
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-
-      if (value.trim().length < 2) {
-        setResults([]);
-        return;
-      }
-
-      debounceRef.current = setTimeout(() => {
-        const found = searchCity(value.trim());
-        setResults(found);
-      }, 300);
-    },
-    [searchCity],
-  );
-
-  const handleSelect = useCallback(
-    (city: LocationData) => {
-      setLocation(city);
-      setQuery('');
-      setResults([]);
-      setIsOpen(false);
-    },
-    [setLocation],
-  );
-
-  // Close dropdown on outside click
+  // Dışarı tıklayınca kapat
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
-        setResults([]);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Cleanup debounce on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
+  // Şehir listesi — ülkeye göre
+  const cities = selectedCountry === 'TR'
+    ? TURKEY_CITIES
+    : INTERNATIONAL_CITIES[selectedCountry] ?? [];
+
+  // İlçe listesi — sadece TR için
+  const districts = selectedCountry === 'TR'
+    ? TURKEY_CITIES.find((c) => c.name === selectedCity)?.districts ?? []
+    : [];
+
+  const handleCountryChange = useCallback((code: string) => {
+    setSelectedCountry(code);
+    setSelectedCity('');
+    setSelectedDistrict('');
   }, []);
+
+  const handleCityChange = useCallback((cityName: string) => {
+    setSelectedCity(cityName);
+    setSelectedDistrict('');
+
+    // TR dışı ülkelerde şehir seçince direkt konum ayarla
+    if (selectedCountry !== 'TR') {
+      const city = (INTERNATIONAL_CITIES[selectedCountry] ?? []).find((c) => c.name === cityName);
+      if (city) {
+        const country = COUNTRIES.find((c) => c.code === selectedCountry);
+        const loc: LocationData = {
+          country: country?.name ?? '',
+          countryCode: selectedCountry,
+          city: city.name,
+          latitude: city.lat,
+          longitude: city.lng,
+          timezone: COUNTRY_TIMEZONES[selectedCountry] ?? 'UTC',
+        };
+        setLocation(loc);
+        setIsOpen(false);
+      }
+      return;
+    }
+
+    // TR'de ilçesi olmayan şehir seçilince direkt ayarla
+    const trCity = TURKEY_CITIES.find((c) => c.name === cityName);
+    if (trCity && (!trCity.districts || trCity.districts.length === 0)) {
+      const loc: LocationData = {
+        country: 'Türkiye',
+        countryCode: 'TR',
+        city: trCity.name,
+        latitude: trCity.lat,
+        longitude: trCity.lng,
+        timezone: 'Europe/Istanbul',
+      };
+      setLocation(loc);
+      setIsOpen(false);
+    }
+  }, [selectedCountry, setLocation]);
+
+  const handleDistrictChange = useCallback((districtName: string) => {
+    setSelectedDistrict(districtName);
+    const trCity = TURKEY_CITIES.find((c) => c.name === selectedCity);
+    const district = trCity?.districts?.find((d) => d.name === districtName);
+    if (district) {
+      const loc: LocationData = {
+        country: 'Türkiye',
+        countryCode: 'TR',
+        city: `${selectedCity} / ${district.name}`,
+        latitude: district.lat,
+        longitude: district.lng,
+        timezone: 'Europe/Istanbul',
+      };
+      setLocation(loc);
+      setIsOpen(false);
+    }
+  }, [selectedCity, setLocation]);
+
+  const selectClass = `
+    w-full rounded-lg px-3 py-2 text-sm appearance-none cursor-pointer
+    bg-white/5 border border-white/10 text-white/90
+    hover:bg-white/10 focus:ring-1 focus:ring-indigo-400/50 outline-none
+    transition-colors
+  `;
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Current location display */}
+      {/* Mevcut konum butonu */}
       {location && !isOpen && (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
           className="
             flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium
-            bg-indigo-100/50 text-indigo-800 border border-indigo-200/40
-            dark:bg-white/10 dark:text-white/70 dark:border-white/10
-            hover:bg-indigo-200/50 dark:hover:bg-white/20 transition-colors
+            bg-white/10 text-white/70 border border-white/10
+            hover:bg-white/20 transition-colors
           "
           aria-label={t('settings.locationChange')}
-          title={t('settings.locationCurrent', {
-            city: location.city,
-            country: location.country,
-          })}
         >
           <span className="text-sm">📍</span>
-          <span className="max-w-[120px] truncate">
+          <span className="max-w-[140px] truncate">
             {location.city}, {location.country}
           </span>
         </button>
       )}
 
-      {/* Loading state */}
+      {/* Loading */}
       {isLoading && !isOpen && (
-        <span className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-indigo-700/70 dark:text-white/50">
+        <span className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-white/50">
           <span className="animate-spin text-sm">⏳</span>
           {t('ui.label.loading')}
         </span>
       )}
 
-      {/* Error state */}
-      {error && !location && !isOpen && (
-        <span className="px-3 py-1.5 text-xs text-red-500 dark:text-red-400">
-          {t('error.locationNotFound')}
-        </span>
-      )}
-
-      {/* Search panel */}
+      {/* Dropdown paneli */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -111,78 +154,68 @@ export default function LocationPicker() {
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             className="
-              absolute right-0 top-0 z-50 w-64
-              rounded-xl p-3
-              bg-white/90 backdrop-blur-xl border border-indigo-200/40 shadow-xl
-              dark:bg-gray-900/90 dark:border-white/10
+              absolute right-0 top-10 z-50 w-72
+              rounded-xl p-4 space-y-3
+              bg-gray-900/95 backdrop-blur-xl border border-white/10 shadow-2xl
             "
           >
-            {/* Search input */}
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder={t('ui.button.search')}
-                autoFocus
-                className="
-                  flex-1 rounded-lg px-3 py-1.5 text-xs
-                  bg-indigo-50/50 border border-indigo-200/30
-                  dark:bg-white/5 dark:border-white/10 dark:text-white/90
-                  placeholder:text-gray-400 dark:placeholder:text-white/30
-                  outline-none focus:ring-1 focus:ring-indigo-400/50
-                "
-              />
+            {/* Başlık + kapat */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">
+                📍 {t('settings.location')}
+              </span>
               <button
                 type="button"
-                onClick={() => {
-                  setIsOpen(false);
-                  setQuery('');
-                  setResults([]);
-                }}
-                className="text-xs text-gray-500 dark:text-white/40 hover:text-gray-700 dark:hover:text-white/70"
+                onClick={() => setIsOpen(false)}
+                className="text-xs text-white/40 hover:text-white/70"
                 aria-label={t('ui.button.close')}
-              >
-                ✕
-              </button>
+              >✕</button>
             </div>
 
-            {/* Current location info */}
-            {location && (
-              <p className="mt-2 text-[10px] text-gray-500 dark:text-white/40 truncate">
-                {t('settings.locationCurrent', {
-                  city: location.city,
-                  country: location.country,
-                })}
-              </p>
-            )}
+            {/* Ülke dropdown */}
+            <select
+              value={selectedCountry}
+              onChange={(e) => handleCountryChange(e.target.value)}
+              className={selectClass}
+            >
+              <option value="" disabled>{t('settings.selectCountry')}</option>
+              {COUNTRIES.map((c) => (
+                <option key={c.code} value={c.code}>{c.name}</option>
+              ))}
+            </select>
 
-            {/* Search results */}
-            {results.length > 0 && (
-              <ul className="mt-2 max-h-40 overflow-y-auto space-y-0.5">
-                {results.map((city) => (
-                  <li key={`${city.city}-${city.latitude}-${city.longitude}`}>
-                    <button
-                      type="button"
-                      onClick={() => handleSelect(city)}
-                      className="
-                        w-full text-left rounded-lg px-2.5 py-1.5 text-xs
-                        text-gray-700 dark:text-white/80
-                        hover:bg-indigo-100/50 dark:hover:bg-white/10
-                        transition-colors
-                      "
-                    >
-                      📍 {city.city}, {city.country}
-                    </button>
-                  </li>
+            {/* Şehir dropdown */}
+            {selectedCountry && cities.length > 0 && (
+              <select
+                value={selectedCity}
+                onChange={(e) => handleCityChange(e.target.value)}
+                className={selectClass}
+              >
+                <option value="" disabled>{t('settings.selectCity')}</option>
+                {cities.map((c) => (
+                  <option key={c.name} value={c.name}>{c.name}</option>
                 ))}
-              </ul>
+              </select>
             )}
 
-            {/* No results */}
-            {query.trim().length >= 2 && results.length === 0 && (
-              <p className="mt-2 text-[10px] text-gray-400 dark:text-white/30 text-center">
-                {t('error.locationNotFound')}
+            {/* İlçe dropdown — sadece TR ve ilçesi olan şehirler */}
+            {selectedCountry === 'TR' && districts.length > 0 && (
+              <select
+                value={selectedDistrict}
+                onChange={(e) => handleDistrictChange(e.target.value)}
+                className={selectClass}
+              >
+                <option value="" disabled>{t('settings.selectDistrict')}</option>
+                {districts.map((d) => (
+                  <option key={d.name} value={d.name}>{d.name}</option>
+                ))}
+              </select>
+            )}
+
+            {/* Mevcut konum bilgisi */}
+            {location && (
+              <p className="text-[10px] text-white/30 truncate pt-1 border-t border-white/5">
+                {t('settings.locationCurrent', { city: location.city, country: location.country })}
               </p>
             )}
           </motion.div>

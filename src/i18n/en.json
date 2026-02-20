@@ -107,5 +107,8 @@
   "settings.languageEn": "English",
   "settings.location": "Location",
   "settings.locationChange": "Change Location",
-  "settings.locationCurrent": "Current Location: {{city}}, {{country}}"
+  "settings.locationCurrent": "Current Location: {{city}}, {{country}}",
+  "settings.selectCountry": "Select Country",
+  "settings.selectCity": "Select City",
+  "settings.selectDistrict": "Select District"
 }

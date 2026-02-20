@@ -107,5 +107,8 @@
   "settings.languageEn": "English",
   "settings.location": "Konum",
   "settings.locationChange": "Konum Değiştir",
-  "settings.locationCurrent": "Mevcut Konum: {{city}}, {{country}}"
+  "settings.locationCurrent": "Mevcut Konum: {{city}}, {{country}}",
+  "settings.selectCountry": "Ülke Seçiniz",
+  "settings.selectCity": "Şehir Seçiniz",
+  "settings.selectDistrict": "İlçe Seçiniz"
 }
