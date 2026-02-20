@@ -1,0 +1,83 @@
+[
+  {
+    "name": "Hicri Yılbaşı",
+    "nameEn": "Islamic New Year",
+    "hijriMonth": 1,
+    "hijriDay": 1,
+    "type": "ozel",
+    "description": "Hicri takvimin yeni yılı",
+    "descriptionEn": "The beginning of the Islamic calendar year"
+  },
+  {
+    "name": "Mevlid Kandili",
+    "nameEn": "Mawlid",
+    "hijriMonth": 3,
+    "hijriDay": 12,
+    "type": "kandil",
+    "description": "Hz. Muhammed'in doğum günü",
+    "descriptionEn": "Birthday of Prophet Muhammad"
+  },
+  {
+    "name": "Regaib Kandili",
+    "nameEn": "Ragaib Night",
+    "hijriMonth": 7,
+    "hijriDay": 1,
+    "type": "kandil",
+    "description": "Recep ayının ilk Cuma gecesi",
+    "descriptionEn": "The first Friday night of Rajab"
+  },
+  {
+    "name": "Mirac Kandili",
+    "nameEn": "Isra and Mi'raj",
+    "hijriMonth": 7,
+    "hijriDay": 27,
+    "type": "kandil",
+    "description": "Hz. Muhammed'in Mirac'a yükselişi",
+    "descriptionEn": "The Night Journey and Ascension of Prophet Muhammad"
+  },
+  {
+    "name": "Berat Kandili",
+    "nameEn": "Mid-Sha'ban",
+    "hijriMonth": 8,
+    "hijriDay": 15,
+    "type": "kandil",
+    "description": "Berat gecesi, günahların affedildiği gece",
+    "descriptionEn": "The Night of Forgiveness"
+  },
+  {
+    "name": "Ramazan Başlangıcı",
+    "nameEn": "Start of Ramadan",
+    "hijriMonth": 9,
+    "hijriDay": 1,
+    "type": "ozel",
+    "description": "Ramazan ayının başlangıcı",
+    "descriptionEn": "The beginning of the holy month of Ramadan"
+  },
+  {
+    "name": "Kadir Gecesi",
+    "nameEn": "Laylat al-Qadr",
+    "hijriMonth": 9,
+    "hijriDay": 27,
+    "type": "kandil",
+    "description": "Kur'an'ın indirilmeye başlandığı gece",
+    "descriptionEn": "The Night of Power, when the Quran was first revealed"
+  },
+  {
+    "name": "Ramazan Bayramı",
+    "nameEn": "Eid al-Fitr",
+    "hijriMonth": 10,
+    "hijriDay": 1,
+    "type": "bayram",
+    "description": "Ramazan ayının bitişi, üç gün süren bayram",
+    "descriptionEn": "Celebration marking the end of Ramadan, lasting three days"
+  },
+  {
+    "name": "Kurban Bayramı",
+    "nameEn": "Eid al-Adha",
+    "hijriMonth": 12,
+    "hijriDay": 10,
+    "type": "bayram",
+    "description": "Dört gün süren kurban bayramı",
+    "descriptionEn": "The Feast of Sacrifice, lasting four days"
+  }
+]
