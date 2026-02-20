@@ -95,6 +95,8 @@
   "time.hours": "hr",
   "time.minutes": "min",
   "time.seconds": "sec",
+  "time.countdown": "COUNTDOWN",
+  "time.currentTime": "Now",
 
   "settings.title": "Settings",
   "settings.theme": "Theme",

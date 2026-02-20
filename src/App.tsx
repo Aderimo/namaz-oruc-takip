@@ -33,7 +33,7 @@ function App() {
   return (
     <Layout>
       <motion.div
-        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2"
+        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 auto-rows-min"
         variants={gridContainer}
         initial="hidden"
         animate="show"

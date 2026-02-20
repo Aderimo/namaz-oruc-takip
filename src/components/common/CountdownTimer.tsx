@@ -19,6 +19,12 @@ export default function CountdownTimer({ hours, minutes, seconds, label }: Count
 
   return (
     <div role="timer" aria-label={label} className="flex flex-col items-center gap-2">
+      {/* Kırmızı GERİ SAYIM badge */}
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/20 border border-red-400/30 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-red-400 animate-pulse">
+        <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
+        {t('time.countdown')}
+      </span>
+
       {label && (
         <span className="text-sm font-medium text-indigo-300/80 dark:text-indigo-300/70">
           {label}

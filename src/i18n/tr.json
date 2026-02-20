@@ -95,6 +95,8 @@
   "time.hours": "sa",
   "time.minutes": "dk",
   "time.seconds": "sn",
+  "time.countdown": "GERİ SAYIM",
+  "time.currentTime": "Şu An",
 
   "settings.title": "Ayarlar",
   "settings.theme": "Tema",

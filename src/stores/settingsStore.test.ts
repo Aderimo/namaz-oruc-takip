@@ -65,7 +65,8 @@ describe('useSettingsStore', () => {
 
     const mod = await import('./settingsStore');
     const state = mod.useSettingsStore.getState();
-    expect(state.theme).toBe('light');
+    // Tema her zaman dark olarak sabitlendi
+    expect(state.theme).toBe('dark');
     expect(state.language).toBe('en');
   });
 

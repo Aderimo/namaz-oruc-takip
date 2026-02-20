@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import LocationPicker from '../settings/LocationPicker';
-import ThemeToggle from '../settings/ThemeToggle';
 import LanguageSwitch from '../settings/LanguageSwitch';
+import LiveClock from '../common/LiveClock';
 
 export default function Header() {
   const { t } = useTranslation();
@@ -26,8 +26,8 @@ export default function Header() {
 
         {/* Location + controls */}
         <div className="flex flex-wrap items-center gap-3">
+          <LiveClock />
           <LocationPicker />
-          <ThemeToggle />
           <LanguageSwitch />
         </div>
       </div>

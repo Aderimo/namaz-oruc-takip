@@ -4,7 +4,7 @@ import * as cacheService from './cacheService';
 
 const LOCATION_CACHE_KEY = 'location';
 const LOCATION_TTL_MS = 24 * 60 * 60 * 1000; // 24 saat
-const IP_API_URL = 'http://ip-api.com/json/';
+const IP_API_URL = 'https://ipapi.co/json/';
 
 // Varsayılan İstanbul konumu
 const DEFAULT_LOCATION: LocationData = {
@@ -42,27 +42,43 @@ const CITY_LIST: LocationData[] = [
 ];
 
 /**
- * ip-api.com API yanıtını LocationData'ya dönüştürür.
- * Test edilebilirlik için ayrı export edilmiştir.
+ * Konum API yanıtını LocationData'ya dönüştürür.
+ * ipapi.co ve ip-api.com formatlarını destekler.
  */
 export function parseLocationResponse(data: unknown): LocationData {
-  if (
-    typeof data !== 'object' ||
-    data === null ||
-    !('status' in data) ||
-    (data as Record<string, unknown>).status !== 'success'
-  ) {
+  if (typeof data !== 'object' || data === null) {
     throw new Error('Invalid API response');
   }
 
   const d = data as Record<string, unknown>;
 
-  const country = typeof d.country === 'string' ? d.country : '';
-  const countryCode = typeof d.countryCode === 'string' ? d.countryCode : '';
-  const city = typeof d.city === 'string' ? d.city : '';
-  const latitude = typeof d.lat === 'number' ? d.lat : 0;
-  const longitude = typeof d.lon === 'number' ? d.lon : 0;
-  const timezone = typeof d.timezone === 'string' ? d.timezone : '';
+  // ipapi.co format check (no 'status' field, has 'country_name')
+  // ip-api.com format check (has 'status' === 'success')
+  const isIpApi = 'status' in d && d.status === 'success';
+  const isIpApiCo = 'country_name' in d && !('error' in d);
+
+  if (!isIpApi && !isIpApiCo) {
+    throw new Error('Invalid API response');
+  }
+
+  let country: string, countryCode: string, city: string;
+  let latitude: number, longitude: number, timezone: string;
+
+  if (isIpApiCo) {
+    country = typeof d.country_name === 'string' ? d.country_name : '';
+    countryCode = typeof d.country_code === 'string' ? d.country_code : '';
+    city = typeof d.city === 'string' ? d.city : '';
+    latitude = typeof d.latitude === 'number' ? d.latitude : 0;
+    longitude = typeof d.longitude === 'number' ? d.longitude : 0;
+    timezone = typeof d.timezone === 'string' ? d.timezone : '';
+  } else {
+    country = typeof d.country === 'string' ? d.country : '';
+    countryCode = typeof d.countryCode === 'string' ? d.countryCode : '';
+    city = typeof d.city === 'string' ? d.city : '';
+    latitude = typeof d.lat === 'number' ? d.lat : 0;
+    longitude = typeof d.lon === 'number' ? d.lon : 0;
+    timezone = typeof d.timezone === 'string' ? d.timezone : '';
+  }
 
   if (!country || !city || !timezone) {
     throw new Error('Missing required fields in API response');

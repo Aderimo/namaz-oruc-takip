@@ -21,7 +21,7 @@ interface SettingsState {
 function loadSettings(): PersistedSettings {
   const saved = cacheService.get<PersistedSettings>(SETTINGS_KEY);
   return {
-    theme: saved?.theme ?? 'dark',
+    theme: 'dark',
     language: saved?.language ?? detectBrowserLanguage(),
   };
 }

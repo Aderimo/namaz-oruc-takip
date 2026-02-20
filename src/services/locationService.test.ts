@@ -37,7 +37,29 @@ describe('locationService', () => {
       });
     });
 
-    it('throws on non-success status', () => {
+    it('parses a valid ipapi.co response', () => {
+      const apiResponse = {
+        country_name: 'Turkey',
+        country_code: 'TR',
+        city: 'Istanbul',
+        latitude: 41.0082,
+        longitude: 28.9784,
+        timezone: 'Europe/Istanbul',
+      };
+
+      const result = parseLocationResponse(apiResponse);
+
+      expect(result).toEqual({
+        country: 'Turkey',
+        countryCode: 'TR',
+        city: 'Istanbul',
+        latitude: 41.0082,
+        longitude: 28.9784,
+        timezone: 'Europe/Istanbul',
+      });
+    });
+
+    it('throws on invalid response', () => {
       expect(() => parseLocationResponse({ status: 'fail' })).toThrow('Invalid API response');
     });
 
@@ -45,7 +67,7 @@ describe('locationService', () => {
       expect(() => parseLocationResponse(null)).toThrow('Invalid API response');
     });
 
-    it('throws on missing required fields', () => {
+    it('throws on missing required fields (ip-api format)', () => {
       const incomplete = {
         status: 'success',
         country: '',
@@ -58,14 +80,13 @@ describe('locationService', () => {
       expect(() => parseLocationResponse(incomplete)).toThrow('Missing required fields');
     });
 
-    it('throws when city is missing', () => {
+    it('throws when city is missing (ipapi.co format)', () => {
       const noCity = {
-        status: 'success',
-        country: 'Turkey',
-        countryCode: 'TR',
+        country_name: 'Turkey',
+        country_code: 'TR',
         city: '',
-        lat: 41,
-        lon: 29,
+        latitude: 41,
+        longitude: 29,
         timezone: 'Europe/Istanbul',
       };
       expect(() => parseLocationResponse(noCity)).toThrow('Missing required fields');
