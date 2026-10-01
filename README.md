@@ -1,43 +1,37 @@
-# 🌙 Namaz ve Oruç Takip
+<div align="center">
 
-Günlük ibadet rehberiniz — namaz vakitleri, oruç bilgileri, hicri takvim ve dini günler tek bir yerde.
+# Prayer & Fasting Tracker
 
-**[🔗 Canlı Demo](https://aderimo.github.io/namaz-oruc-takip/)**
+**Your daily worship companion — prayer times, fasting info, hijri calendar.**
 
-![Dark Theme](https://img.shields.io/badge/tema-karanlık-1a1a2e?style=flat-square)
-![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?style=flat-square&logo=typescript)
-![Tailwind](https://img.shields.io/badge/Tailwind_CSS-4-06b6d4?style=flat-square&logo=tailwindcss)
+[![Live Demo](https://img.shields.io/badge/live%20demo-aderimo.github.io%2Fnamaz--oruc--takip-5B7CFF)](https://aderimo.github.io/namaz-oruc-takip/)
+[![License](https://img.shields.io/badge/license-MIT-4ADE80)](LICENSE)
+[![Stack](https://img.shields.io/badge/React_19_%2B_TypeScript_%2B_Tailwind_4-6B7280)](#tech-stack)
+[![PWA](https://img.shields.io/badge/PWA-ready-4ADE80)](#features)
+
+Prayer times (Diyanet method), live countdowns to the next prayer and iftar/sahur,
+hijri calendar, religious days and official holidays — in one dark, fast PWA.
+
+**English** · [Türkçe](README.tr.md)
+
+</div>
 
 ---
 
-## ✨ Özellikler
+## Features
 
-- **Namaz Vakitleri** — Diyanet metoduyla (Aladhan API) günlük 6 vakit
-- **Geri Sayım** — Sonraki namaz ve iftar/sahur için canlı geri sayım
-- **Oruç Bilgileri** — Ramazan günü, sahur/iftar vakitleri
-- **Hicri Takvim** — Otomatik hicri tarih dönüşümü
-- **Dini Günler** — Kandiller, bayramlar ve özel günler
-- **Resmi Tatiller** — Türkiye resmi tatil takvimi
-- **Konum Seçici** — Ülke → Şehir → İlçe cascading dropdown (81 il + 16 ülke)
-- **Çoklu Dil** — Türkçe / English
-- **Canlı Saat** — Header'da anlık saat gösterimi
-- **PWA Desteği** — Mobil uyumlu, ana ekrana eklenebilir
+- **Prayer times** — 6 daily times via the Diyanet method (Aladhan API)
+- **Countdown** — live countdown to the next prayer and iftar/sahur
+- **Fasting info** — Ramadan day, sahur/iftar times
+- **Hijri calendar** — automatic hijri date conversion
+- **Religious days** — kandils, eids and special days
+- **Official holidays** — Turkish public holiday calendar
+- **Location picker** — cascading country → city → district dropdowns (81 provinces + 16 countries)
+- **Multilingual** — Türkçe / English
+- **Live clock** in the header
+- **PWA support** — mobile-friendly, installable to home screen
 
-## 🛠 Teknolojiler
-
-| Teknoloji | Kullanım |
-|-----------|----------|
-| React 19 | UI framework |
-| TypeScript | Tip güvenliği |
-| Tailwind CSS 4 | Stil |
-| Zustand | State yönetimi |
-| i18next | Çoklu dil |
-| Framer Motion | Animasyonlar |
-| Vite | Build tool |
-| Vitest | Test framework |
-
-## 🚀 Kurulum
+## Setup
 
 ```bash
 git clone https://github.com/Aderimo/namaz-oruc-takip.git
@@ -46,41 +40,54 @@ npm install
 npm run dev
 ```
 
-## 📦 Komutlar
+## Commands
 
-| Komut | Açıklama |
-|-------|----------|
-| `npm run dev` | Geliştirme sunucusu |
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Development server |
 | `npm run build` | Production build |
-| `npm test` | Testleri çalıştır |
-| `npm run lint` | Lint kontrolü |
+| `npm test` | Run tests |
+| `npm run lint` | Lint check |
 
-## 🌍 API Kaynakları
+## Tech stack
 
-- [Aladhan API](https://aladhan.com/prayer-times-api) — Namaz vakitleri (Diyanet metodu)
-- [ipapi.co](https://ipapi.co/) — IP tabanlı konum tespiti
-- [Nager.Date](https://date.nager.at/) — Resmi tatil verileri
+| Technology | Used for |
+| --- | --- |
+| React 19 | UI framework |
+| TypeScript | Type safety |
+| Tailwind CSS 4 | Styling |
+| Zustand | State management |
+| i18next | Internationalization |
+| Framer Motion | Animations |
+| Vite | Build tool |
+| Vitest | Test framework |
 
-## 📁 Proje Yapısı
+## API sources
+
+- [Aladhan API](https://aladhan.com/prayer-times-api) — prayer times (Diyanet method)
+- [ipapi.co](https://ipapi.co/) — IP-based location detection
+- [Nager.Date](https://date.nager.at/) — public holiday data
+
+## Project structure
 
 ```
 src/
-├── components/       # React bileşenleri
-│   ├── calendar/     # Takvim, dini günler, tatiller
-│   ├── common/       # Ortak bileşenler (Card, CountdownTimer, LiveClock)
-│   ├── fasting/      # Oruç bilgileri
+├── components/       # React components
+│   ├── calendar/     # Calendar, religious days, holidays
+│   ├── common/       # Shared components (Card, CountdownTimer, LiveClock)
+│   ├── fasting/      # Fasting info
 │   ├── layout/       # Header, Footer, Layout
-│   ├── prayer/       # Namaz vakitleri
-│   └── settings/     # Konum seçici, dil değiştirici
-├── data/             # Statik veri (şehirler, dini günler, tatiller)
+│   ├── prayer/       # Prayer times
+│   └── settings/     # Location picker, language switcher
+├── data/             # Static data (cities, religious days, holidays)
 ├── hooks/            # Custom React hooks
-├── i18n/             # Çoklu dil dosyaları (TR/EN)
-├── services/         # API servisleri
-├── stores/           # Zustand state yönetimi
-├── types/            # TypeScript tipleri
-└── utils/            # Yardımcı fonksiyonlar
+├── i18n/             # Translation files (TR/EN)
+├── services/         # API services
+├── stores/           # Zustand state management
+├── types/            # TypeScript types
+└── utils/            # Helper functions
 ```
 
-## 📄 Lisans
+## License
 
-MIT
+[MIT](LICENSE)
